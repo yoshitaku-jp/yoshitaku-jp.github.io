@@ -12,19 +12,21 @@ interface Content {
   links: { label: string; href: string; note: string }[];
   career: { period: string; company: string; role: string; description: string }[];
   skills: { category: string; items: string[] }[];
-  headings: { career: string; skills: string; links: string };
+  /** 取得年月の新しい順に並べる */
+  certifications: { earned: string; name: string }[];
+  headings: { career: string; skills: string; certifications: string; links: string };
 }
 
 export const content: Record<Locale, Content> = {
   ja: {
     profile: {
       name: 'YOSHIMURA Takuya',
-      nameSub: '吉村 健矢',
-      role: 'データエンジニア',
+      nameSub: 'yoshitaku-jp',
+      role: 'アナリティクスエンジニア / データエンジニア',
       summary:
         'データ基盤の設計・構築と、ETL / ELT パイプラインの運用を主な仕事にしています。データが「使える状態」で届くまでの流れを整えることに関心があります。',
     },
-    headings: { career: '経歴', skills: '技術', links: 'リンク' },
+    headings: { career: '経歴', skills: '技術', certifications: '資格', links: 'リンク' },
     links: [
       { label: 'GitHub', href: 'https://github.com/yoshitaku-jp', note: 'コードと個人プロジェクト' },
       { label: 'Blog', href: 'https://yoshitaku-jp.hatenablog.com/', note: '技術記事（はてなブログ）' },
@@ -39,7 +41,13 @@ export const content: Record<Locale, Content> = {
     ],
     career: [
       {
-        period: '2022.09 — 現在',
+        period: '2026.09 — 現在',
+        company: '株式会社カオナビ',
+        role: 'アナリティクスエンジニア',
+        description: 'Snowflake と AWS を用いたデータ基盤の構築・運用と、データ利活用の推進。',
+      },
+      {
+        period: '2022.09 — 2026.08',
         company: '株式会社MIXI',
         role: 'データエンジニア',
         description:
@@ -54,24 +62,29 @@ export const content: Record<Locale, Content> = {
       },
     ],
     skills: [
-      { category: '言語', items: ['SQL', 'Python', 'Ruby'] },
+      { category: '言語', items: ['SQL', 'Python'] },
       {
         category: 'データ分析基盤',
-        items: ['BigQuery', 'Dataform', 'dbt', 'Looker', 'Amazon EMR', 'AWS Glue'],
+        items: ['Snowflake', 'BigQuery', 'Looker'],
       },
-      { category: 'クラウド', items: ['GCP', 'AWS', 'Azure'] },
+      { category: 'クラウド', items: ['AWS', 'GCP'] },
       { category: '開発・運用', items: ['Terraform', 'GitHub Actions', 'Docker'] },
+    ],
+    certifications: [
+      { earned: '2021.03', name: 'DP-201: Designing an Azure Data Solution' },
+      { earned: '2021.03', name: 'DP-200: Implementing an Azure Data Solution' },
+      { earned: '2015.11', name: '基本情報技術者試験' },
     ],
   },
   en: {
     profile: {
       name: 'YOSHIMURA Takuya',
-      nameSub: '吉村 健矢',
-      role: 'Data Engineer',
+      nameSub: 'yoshitaku-jp',
+      role: 'Analytics Engineer / Data Engineer',
       summary:
         'I design and build data platforms, and operate ETL / ELT pipelines. I care about making data reliably available in a usable state.',
     },
-    headings: { career: 'Career', skills: 'Skills', links: 'Links' },
+    headings: { career: 'Career', skills: 'Skills', certifications: 'Certifications', links: 'Links' },
     links: [
       { label: 'GitHub', href: 'https://github.com/yoshitaku-jp', note: 'Code & side projects' },
       { label: 'Blog', href: 'https://yoshitaku-jp.hatenablog.com/', note: 'Technical articles (in Japanese)' },
@@ -86,7 +99,15 @@ export const content: Record<Locale, Content> = {
     ],
     career: [
       {
-        period: '2022.09 — Present',
+        period: '2026.09 — Present',
+        // 公式の会社概要に「英文 kaonavi, inc.」と明記（inc. は小文字）
+        company: 'kaonavi, inc.',
+        role: 'Analytics Engineer',
+        description:
+          'Building and operating data platforms with Snowflake and AWS, and driving wider use of data across the organization.',
+      },
+      {
+        period: '2022.09 — 2026.08',
         company: 'MIXI, Inc.',
         role: 'Data Engineer',
         description:
@@ -102,13 +123,21 @@ export const content: Record<Locale, Content> = {
       },
     ],
     skills: [
-      { category: 'Languages', items: ['SQL', 'Python', 'Ruby'] },
+      { category: 'Languages', items: ['SQL', 'Python'] },
       {
         category: 'Data Platform',
-        items: ['BigQuery', 'Dataform', 'dbt', 'Looker', 'Amazon EMR', 'AWS Glue'],
+        items: ['Snowflake', 'BigQuery', 'Looker'],
       },
-      { category: 'Cloud', items: ['GCP', 'AWS', 'Azure'] },
+      { category: 'Cloud', items: ['AWS', 'GCP'] },
       { category: 'Dev & Ops', items: ['Terraform', 'GitHub Actions', 'Docker'] },
+    ],
+    certifications: [
+      { earned: '2021.03', name: 'DP-201: Designing an Azure Data Solution' },
+      { earned: '2021.03', name: 'DP-200: Implementing an Azure Data Solution' },
+      {
+        earned: '2015.11',
+        name: 'Fundamental Information Technology Engineer Examination',
+      },
     ],
   },
 };

@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const { profile, links, career, skills, headings } = content[lang];
+const { profile, links, career, skills, certifications, headings } = content[lang];
 
 const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens in a new tab)';
 ---
@@ -14,7 +14,17 @@ const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens i
 <main>
   <aside class="sidebar">
     <header class="profile">
-      <p class="role">{profile.role}</p>
+      {/* 「/」区切りでのみ折り返し、肩書きの語中で切れないようにする */}
+      <p class="role">
+        {
+          profile.role.split(' / ').map((part, index) => (
+            <Fragment>
+              {index > 0 && <span class="role-sep" aria-hidden="true"> / </span>}
+              <span class="role-part">{part}</span>
+            </Fragment>
+          ))
+        }
+      </p>
       <h1>
         {profile.name}
         <span class="name-sub">{profile.nameSub}</span>
@@ -71,10 +81,10 @@ const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens i
 
     <section aria-labelledby="skills-heading">
       <h2 id="skills-heading">{headings.skills}</h2>
-      <dl class="skills">
+      <dl class="spec">
         {
           skills.map((group) => (
-            <div class="skill-group">
+            <div class="spec-row">
               <dt>{group.category}</dt>
               <dd>
                 <ul class="skill-items">
@@ -83,6 +93,20 @@ const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens i
                   ))}
                 </ul>
               </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section aria-labelledby="certifications-heading">
+      <h2 id="certifications-heading">{headings.certifications}</h2>
+      <dl class="spec">
+        {
+          certifications.map((certification) => (
+            <div class="spec-row">
+              <dt>{certification.earned}</dt>
+              <dd>{certification.name}</dd>
             </div>
           ))
         }
@@ -145,6 +169,10 @@ const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens i
     font-family: var(--font-mincho);
     font-size: 13px;
     letter-spacing: 0.16em;
+  }
+
+  .role-part {
+    white-space: nowrap;
   }
 
   h1 {
@@ -273,23 +301,27 @@ const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens i
     line-height: 1.6;
   }
 
-  /* 技術：枠で囲わず、中黒区切りの一覧にして紙面を軽く保つ */
-  .skills {
+  /*
+   * 「ラベル → 値」の一覧。技術と資格で共用する。
+   * 枠で囲わず、中黒区切りにして紙面を軽く保つ。
+   */
+  .spec {
     margin: 0;
   }
 
-  .skill-group + .skill-group {
+  .spec-row + .spec-row {
     margin-top: var(--s2);
   }
 
-  .skills dt {
+  .spec dt {
     color: var(--ai-soft);
     font-size: 13px;
     letter-spacing: 0.08em;
   }
 
-  .skills dd {
+  .spec dd {
     margin: 2px 0 0;
+    font-size: 15px;
   }
 
   .skill-items {
@@ -309,7 +341,6 @@ const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens i
   /*
    * PC 向けの上書きは必ずファイル末尾に置く。
    * 基本ルールより前に書くと、後続の shorthand（margin など）に打ち消される。
-   * 内容としては 1366x768 に収めるための余白の切り詰めで、値は 8px グリッドを守る。
    */
   @media (min-width: 48rem) {
     .content {
@@ -322,29 +353,24 @@ const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens i
 
     .sidebar > section,
     .content > section + section {
-      margin-top: var(--s3);
+      margin-top: var(--s4);
     }
 
     h1 {
-      margin-top: var(--s1);
       /* 英語版の "YOSHIMURA Takuya" がサイドバー幅に1行で収まる上限 */
       font-size: 24px;
     }
 
-    .summary {
-      margin-top: var(--s2);
+    /* PC ではラベルと値を横に並べ、1項目1行に畳む */
+    .spec-row {
+      display: grid;
+      grid-template-columns: 7rem 1fr;
+      gap: var(--s2);
+      align-items: baseline;
     }
 
-    h2 {
-      margin-bottom: var(--s1);
-    }
-
-    .journey li + li {
-      margin-top: var(--s2);
-    }
-
-    .skill-group + .skill-group {
-      margin-top: var(--s1);
+    .spec dd {
+      margin: 0;
     }
   }
 </style>
