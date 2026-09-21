@@ -25,7 +25,8 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
+    {/* sizes="any" は SVG 用。ラスタの .ico に付けると Chrome がアイコンを選べない */}
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <meta property="og:title" content={title} />
