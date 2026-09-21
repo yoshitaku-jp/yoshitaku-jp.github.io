@@ -136,8 +136,23 @@ export const content: Record<Locale, Content> = {
       { earned: '2021.03', name: 'DP-200: Implementing an Azure Data Solution' },
       {
         earned: '2015.11',
-        name: 'Fundamental Information Technology Engineer Examination',
+        // 海外の読み手には通じないため、日本の国家資格であることを明示する
+        name: 'Fundamental Information Technology Engineer Examination (FE) — a Japanese national IT qualification',
       },
     ],
   },
 };
+
+/*
+ * 日本語側だけ追記して英語側を忘れる事故が起きやすいので、件数を突き合わせる。
+ * このファイルが読み込まれた時点で走るため、dev サーバー起動時とビルド時に必ず検査される。
+ */
+for (const key of ['links', 'career', 'skills', 'certifications'] as const) {
+  const ja = content.ja[key].length;
+  const en = content.en[key].length;
+  if (ja !== en) {
+    throw new Error(
+      `content.ts: ${key} の件数が ja=${ja} と en=${en} で一致しません。両方の言語を埋めてください。`
+    );
+  }
+}

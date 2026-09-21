@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r \".tool_input.file_path // .tool_response.filePath // empty\" | { read -r f; case \"$f\" in */src/*) out=$(npm run build 2>&1) || { printf \"%s\\n\" \"ビルドが失敗しました:\" >&2; printf \"%s\\n\" \"$out\" | tail -25 >&2; exit 2; } ;; esac; }",
+            "timeout": 120,
+            "statusMessage": "ビルド確認中..."
+          }
+        ]
+      }
+    ]
+  }
+}
