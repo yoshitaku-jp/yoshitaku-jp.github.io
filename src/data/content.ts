@@ -18,8 +18,8 @@ interface Content {
 export const content: Record<Locale, Content> = {
   ja: {
     profile: {
-      name: '吉村 健矢',
-      nameSub: 'YOSHIMURA Takuya',
+      name: 'YOSHIMURA Takuya',
+      nameSub: '吉村 健矢',
       role: 'データエンジニア',
       summary:
         'データ基盤の設計・構築と、ETL / ELT パイプラインの運用を主な仕事にしています。データが「使える状態」で届くまでの流れを整えることに関心があります。',
