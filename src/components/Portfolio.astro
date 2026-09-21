@@ -1,0 +1,350 @@
+---
+import { content, type Locale } from '../data/content';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { profile, links, career, skills, headings } = content[lang];
+
+const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens in a new tab)';
+---
+
+<main>
+  <aside class="sidebar">
+    <header class="profile">
+      <p class="role">{profile.role}</p>
+      <h1>
+        {profile.name}
+        <span class="name-sub">{profile.nameSub}</span>
+      </h1>
+      <p class="summary">{profile.summary}</p>
+    </header>
+
+    <section aria-labelledby="links-heading">
+      <h2 id="links-heading">{headings.links}</h2>
+      <ul class="links">
+        {
+          links.map((link) => {
+            // 外部リンクは別タブで開く。将来 /projects/ のような内部リンクを
+            // 足したときは、そのまま同じタブで遷移させたいので href で判定する。
+            const isExternal = link.href.startsWith('http');
+            return (
+              <li>
+                <a
+                  href={link.href}
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
+                >
+                  {link.label}
+                  {isExternal && <span class="sr-only">{newTabLabel}</span>}
+                </a>
+                <span class="note">{link.note}</span>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
+  </aside>
+
+  <div class="content">
+    <section aria-labelledby="career-heading">
+      <h2 id="career-heading">{headings.career}</h2>
+      {/* 経歴は「旅程」として、route 線と停留点で辿れるようにする */}
+      <ol class="journey">
+        {
+          career.map((job) => (
+            <li>
+              <p class="period">{job.period}</p>
+              <p class="company">
+                {job.company}
+                <span class="job-role">{job.role}</span>
+              </p>
+              <p class="description">{job.description}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section aria-labelledby="skills-heading">
+      <h2 id="skills-heading">{headings.skills}</h2>
+      <dl class="skills">
+        {
+          skills.map((group) => (
+            <div class="skill-group">
+              <dt>{group.category}</dt>
+              <dd>
+                <ul class="skill-items">
+                  {group.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+  </div>
+</main>
+
+<style>
+  main {
+    max-width: var(--measure);
+    margin-inline: auto;
+  }
+
+  /* 広い画面では、人物（左）と実績（右）の2段組にして縦スクロールを抑える */
+  @media (min-width: 48rem) {
+    main {
+      max-width: var(--measure-wide);
+      display: grid;
+      grid-template-columns: minmax(16rem, 18rem) 1fr;
+      gap: var(--s6);
+      align-items: start;
+    }
+  }
+
+  /* セクション間の余白は見出しではなくコンテナ側が持つ（AGENTS.md 参照） */
+  .sidebar > section,
+  .content,
+  .content > section + section {
+    margin-top: var(--s5);
+  }
+
+
+  /*
+   * センターサークル（サッカー）を紙に透かしたような極薄の円で入れる。
+   * 図柄として主張させず、余白に密度を与えるだけの役割。
+   */
+  .profile {
+    position: relative;
+  }
+
+  .profile::before {
+    content: '';
+    /* 狭い幅では画面端で切れて描き損じに見えるため、PC 幅でのみ表示する */
+    display: none;
+    position: absolute;
+    /* 氏名の右脇に置く。上に出すと言語切り替えと干渉して「描き損じ」に見える */
+    top: 56px;
+    right: -88px;
+    width: 208px;
+    height: 208px;
+    border: 1px solid rgba(27, 53, 82, 0.07);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .role {
+    margin: 0;
+    color: var(--shu);
+    font-family: var(--font-mincho);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+  }
+
+  h1 {
+    margin: var(--s2) 0 0;
+    font-family: var(--font-mincho);
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+  }
+
+  .name-sub {
+    display: block;
+    margin-top: var(--s1);
+    color: var(--ai-soft);
+    font-family: var(--font-gothic);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+  }
+
+  .summary {
+    margin: var(--s3) 0 0;
+    font-size: 15px;
+  }
+
+  h2 {
+    margin: 0 0 var(--s2);
+    padding-bottom: var(--s1);
+    border-bottom: 1px solid var(--line);
+    color: var(--ai);
+    font-family: var(--font-mincho);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+
+  /* 経歴：縦の route 線と、各社を表す停留点 */
+  .journey {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .journey li {
+    position: relative;
+    padding-left: var(--s3);
+  }
+
+  .journey li + li {
+    margin-top: var(--s3);
+  }
+
+  /* 停留点 */
+  .journey li::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--shu);
+  }
+
+  /* 停留点どうしをつなぐ route 線。最後の停留点からは伸ばさない */
+  .journey li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 21px;
+    left: 3px;
+    width: 1px;
+    height: calc(100% - 21px + var(--s3));
+    background: var(--line);
+  }
+
+  .period {
+    margin: 0;
+    color: var(--ai-soft);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+  }
+
+  .company {
+    margin: var(--s1) 0 0;
+    font-family: var(--font-mincho);
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .job-role {
+    display: block;
+    margin-top: 2px;
+    color: var(--ai-soft);
+    font-family: var(--font-gothic);
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  .description {
+    margin: var(--s1) 0 0;
+    font-size: 15px;
+  }
+
+  /* リンク：ラベルと注釈を2行に積み、左端を必ず揃える */
+  .links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .links li + li {
+    margin-top: var(--s2);
+  }
+
+  .links a {
+    font-size: 16px;
+    text-decoration-color: var(--line);
+  }
+
+  .note {
+    display: block;
+    margin-top: 2px;
+    color: var(--ai-soft);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* 技術：枠で囲わず、中黒区切りの一覧にして紙面を軽く保つ */
+  .skills {
+    margin: 0;
+  }
+
+  .skill-group + .skill-group {
+    margin-top: var(--s2);
+  }
+
+  .skills dt {
+    color: var(--ai-soft);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+  }
+
+  .skills dd {
+    margin: 2px 0 0;
+  }
+
+  .skill-items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 15px;
+  }
+
+  .skill-items li + li::before {
+    content: '・';
+    color: var(--line);
+  }
+
+  /*
+   * PC 向けの上書きは必ずファイル末尾に置く。
+   * 基本ルールより前に書くと、後続の shorthand（margin など）に打ち消される。
+   * 内容としては 1366x768 に収めるための余白の切り詰めで、値は 8px グリッドを守る。
+   */
+  @media (min-width: 48rem) {
+    .content {
+      margin-top: 0;
+    }
+
+    .profile::before {
+      display: block;
+    }
+
+    .sidebar > section,
+    .content > section + section {
+      margin-top: var(--s3);
+    }
+
+    h1 {
+      margin-top: var(--s1);
+      /* 英語版の "YOSHIMURA Takuya" がサイドバー幅に1行で収まる上限 */
+      font-size: 24px;
+    }
+
+    .summary {
+      margin-top: var(--s2);
+    }
+
+    h2 {
+      margin-bottom: var(--s1);
+    }
+
+    .journey li + li {
+      margin-top: var(--s2);
+    }
+
+    .skill-group + .skill-group {
+      margin-top: var(--s1);
+    }
+  }
+</style>
