@@ -1,0 +1,119 @@
+---
+import Analytics from '../components/Analytics.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** OGP の og:type。トップは website、記事ページは article を渡す。 */
+  ogType?: 'website' | 'article';
+}
+
+const { title, description, ogType = 'website' } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Analytics />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content="ja_JP" />
+    <meta name="twitter:card" content="summary" />
+
+    <!-- DotGothic16: 日本語のドット絵フォント / Press Start 2P: 英字見出し用 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap"
+    />
+  </head>
+
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    /* ファミコン風に色数を絞ったパレット（ダーク固定） */
+    color-scheme: dark;
+
+    --bg: #0b1030;
+    --panel: #161c48;
+    --fg: #f7f7ef;
+    --fg-muted: #9aa4dc;
+    --line: #4d5ba6;
+    --accent: #f8b800; /* 見出し・カーソル */
+    --accent-alt: #58d0f8; /* リンク */
+
+    /* ドット1つ分。枠線やズレの単位をすべてこれに揃える */
+    --px: 4px;
+    --measure: 44rem;
+
+    --font-jp: 'DotGothic16', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    --font-en: 'Press Start 2P', var(--font-jp);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding-block: clamp(2rem, 7vw, 4rem);
+    padding-inline: 1.25rem;
+    background-color: var(--bg);
+    /* 背景のドット格子。控えめに敷くだけで 8bit 感が出る */
+    background-image: radial-gradient(var(--panel) 1px, transparent 1px);
+    background-size: 16px 16px;
+    color: var(--fg);
+    font-family: var(--font-jp);
+    font-size: 1.0625rem;
+    line-height: 1.9;
+  }
+
+  a {
+    color: var(--accent-alt);
+    text-decoration-thickness: var(--px);
+    text-underline-offset: 0.25em;
+  }
+
+  :focus-visible {
+    outline: var(--px) solid var(--accent);
+    outline-offset: var(--px);
+  }
+
+  img {
+    max-width: 100%;
+    /* ドット絵を拡大しても滑らかにしない */
+    image-rendering: pixelated;
+  }
+
+  /*
+   * 角が1ドット欠けたピクセル枠。
+   * 4辺それぞれに box-shadow を出すことで、角だけ枠線が届かず階段状になる。
+   */
+  .pixel-frame {
+    background: var(--panel);
+    box-shadow:
+      0 calc(-1 * var(--px)) 0 0 var(--line),
+      0 var(--px) 0 0 var(--line),
+      calc(-1 * var(--px)) 0 0 0 var(--line),
+      var(--px) 0 0 0 var(--line);
+  }
+</style>

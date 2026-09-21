@@ -1,0 +1,22 @@
+---
+// GA4 の受け口。PUBLIC_GA4_ID が未設定なら何も出力しないため、
+// ローカル開発と PR ビルドは計測を汚さない。
+const gaId = import.meta.env.PUBLIC_GA4_ID;
+---
+
+{
+  gaId && (
+    <Fragment>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+      <script
+        is:inline
+        set:html={`
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaId}');
+`}
+      />
+    </Fragment>
+  )
+}

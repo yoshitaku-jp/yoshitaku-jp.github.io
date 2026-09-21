@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8" shape-rendering="crispEdges">
+  <rect width="8" height="8" fill="#0b1030" />
+  <!-- 1マス = 1ドット。▶ カーソルを 8x8 のドットで描く -->
+  <g fill="#f8b800">
+    <rect x="2" y="1" width="1" height="6" />
+    <rect x="3" y="2" width="1" height="4" />
+    <rect x="4" y="3" width="1" height="2" />
+  </g>
+</svg>
