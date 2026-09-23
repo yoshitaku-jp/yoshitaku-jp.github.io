@@ -15,6 +15,23 @@ interface Content {
   /** 取得年月の新しい順に並べる */
   certifications: { earned: string; name: string }[];
   headings: { career: string; skills: string; certifications: string; links: string };
+  privacy: {
+    title: string;
+    /** フッターのリンク文言 */
+    linkLabel: string;
+    backLabel: string;
+    /** 「当サイト」が何を指すかの定義 */
+    scope: string;
+    analytics: {
+      heading: string;
+      paragraphs: string[];
+      /** Google のポリシーへのリンクの直前に置く一文 */
+      policyLead: string;
+      policyLink: { label: string; href: string };
+    };
+    revision: { heading: string; paragraph: string };
+    enacted: string;
+  };
 }
 
 export const content: Record<Locale, Content> = {
@@ -75,6 +92,31 @@ export const content: Record<Locale, Content> = {
       { earned: '2021.03', name: 'DP-200: Implementing an Azure Data Solution' },
       { earned: '2015.11', name: '基本情報技術者試験' },
     ],
+    privacy: {
+      title: 'プライバシーポリシー',
+      linkLabel: 'プライバシーポリシー',
+      backLabel: 'トップへ戻る',
+      scope:
+        '本ポリシーにおける「当サイト」とは、YOSHIMURA Takuya のポートフォリオサイト（https://yoshitaku-jp.github.io/）を指します。',
+      analytics: {
+        heading: 'アクセス解析ツールについて',
+        paragraphs: [
+          '当サイトでは、アクセス状況を把握するために、Google が提供するアクセス解析ツール「Google アナリティクス」を利用しています。',
+          'Google アナリティクスはデータの収集に Cookie を使用しています。収集されるデータは匿名であり、個人を特定するものではありません。',
+          'この収集は、ブラウザの設定で Cookie を無効にすることで拒否できます。設定方法は、お使いのブラウザのヘルプをご確認ください。',
+        ],
+        policyLead: 'Google によるデータの取り扱いについては、以下をご覧ください。',
+        policyLink: {
+          label: 'Google のサービスを使用するサイトやアプリから収集した情報の Google による使用',
+          href: 'https://policies.google.com/technologies/partner-sites?hl=ja',
+        },
+      },
+      revision: {
+        heading: '本ポリシーの変更',
+        paragraph: '本ポリシーの内容は、必要に応じて変更することがあります。変更後の内容は本ページに掲載します。',
+      },
+      enacted: '制定日：2026年9月23日',
+    },
   },
   en: {
     profile: {
@@ -140,6 +182,31 @@ export const content: Record<Locale, Content> = {
         name: 'Fundamental Information Technology Engineer Examination (FE) — a Japanese national IT qualification',
       },
     ],
+    privacy: {
+      title: 'Privacy Policy',
+      linkLabel: 'Privacy Policy',
+      backLabel: 'Back to top',
+      scope:
+        'In this policy, "this site" refers to the portfolio site of YOSHIMURA Takuya (https://yoshitaku-jp.github.io/).',
+      analytics: {
+        heading: 'Analytics',
+        paragraphs: [
+          'This site uses Google Analytics, an analytics service provided by Google, to understand how visitors use the site.',
+          'Google Analytics uses cookies to collect data. The data is collected anonymously and does not identify you personally.',
+          'You can opt out of this collection by disabling cookies in your browser settings. Please refer to your browser’s help for instructions.',
+        ],
+        policyLead: 'For details on how Google handles this data, see:',
+        policyLink: {
+          label: 'How Google uses information from sites or apps that use our services',
+          href: 'https://policies.google.com/technologies/partner-sites?hl=en',
+        },
+      },
+      revision: {
+        heading: 'Changes to This Policy',
+        paragraph: 'This policy may be updated as needed. Any changes will be posted on this page.',
+      },
+      enacted: 'Effective: September 23, 2026',
+    },
   },
 };
 

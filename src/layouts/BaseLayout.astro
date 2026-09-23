@@ -1,5 +1,6 @@
 ---
 import Analytics from '../components/Analytics.astro';
+import { content } from '../data/content';
 
 interface Props {
   title: string;
@@ -13,6 +14,11 @@ interface Props {
 const { title, description, ogType = 'website', lang = 'ja' } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+
+// 言語切り替えは同じページの別言語版へ飛ばす（/privacy/ ⇔ /en/privacy/）
+const jaPath = Astro.url.pathname.replace(/^\/en(?=\/)/, '');
+const enPath = `/en${jaPath}`;
+const privacyHref = lang === 'ja' ? '/privacy/' : '/en/privacy/';
 ---
 
 <!doctype html>
@@ -44,11 +50,14 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 
   <body>
     <nav class="lang-switch" aria-label="Language">
-      <a href="/" aria-current={lang === 'ja' ? 'page' : undefined}>JA</a>
+      <a href={jaPath} aria-current={lang === 'ja' ? 'page' : undefined}>JA</a>
       <span class="lang-sep" aria-hidden="true">／</span>
-      <a href="/en/" aria-current={lang === 'en' ? 'page' : undefined}>EN</a>
+      <a href={enPath} aria-current={lang === 'en' ? 'page' : undefined}>EN</a>
     </nav>
     <slot />
+    <footer class="site-footer">
+      <a href={privacyHref}>{content[lang].privacy.linkLabel}</a>
+    </footer>
   </body>
 </html>
 
@@ -142,13 +151,6 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     letter-spacing: 0.08em;
   }
 
-  @media (min-width: 48rem) {
-    .lang-switch {
-      max-width: var(--measure-wide);
-      margin-bottom: var(--s3);
-    }
-  }
-
   .lang-switch a {
     color: var(--ai-soft);
     text-decoration: none;
@@ -170,5 +172,32 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
+  }
+
+  .site-footer {
+    max-width: var(--measure);
+    margin: var(--s6) auto 0;
+    padding-top: var(--s2);
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+  }
+
+  .site-footer a {
+    color: var(--ai-soft);
+  }
+
+  /*
+   * PC 向けの上書きは必ずファイル末尾に置く。
+   * 基本ルールより前に書くと、後続の shorthand（margin など）に打ち消される。
+   */
+  @media (min-width: 48rem) {
+    .lang-switch,
+    .site-footer {
+      max-width: var(--measure-wide);
+    }
+
+    .lang-switch {
+      margin-bottom: var(--s3);
+    }
   }
 </style>

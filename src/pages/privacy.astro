@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PrivacyPolicy from '../components/PrivacyPolicy.astro';
+import { content } from '../data/content';
+
+const { profile, privacy } = content.ja;
+---
+
+<BaseLayout lang="ja" title={`${privacy.title} | ${profile.name}`} description={privacy.scope}>
+  <PrivacyPolicy lang="ja" />
+</BaseLayout>

@@ -99,6 +99,7 @@ src/data/content.ts        ← ja / en の文言をすべてここに集約
 src/components/Portfolio.astro  ← lang を受け取って描画する共通コンポーネント
 src/pages/index.astro      ← <Portfolio lang="ja" />
 src/pages/en/index.astro   ← <Portfolio lang="en" />
+src/pages/privacy.astro / src/pages/en/privacy.astro  ← <PrivacyPolicy lang=… />（GA4 の利用開示）
 ```
 
 - **文言をコンポーネントに直接書かない。** 必ず `content.ts` に足して両言語を埋める。
@@ -142,8 +143,8 @@ CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ## 7. 変更後に必ず通すもの
 
 ```bash
-npm run build   # astro check（型）＋ astro build（/ と /en/ の2ページ生成）
+npm run build   # astro check（型）＋ astro build（/・/en/・/privacy/・/en/privacy/ の4ページ生成）
 ```
 
-- 型エラー 0、ページ 2枚が生成されることを確認する。
+- 型エラー 0、ページ 4枚が生成されることを確認する。
 - そのうえで 1366×768 と 500px 幅のスクリーンショットを撮り、**目で見て**崩れがないことを確認してから完了とする。

@@ -1,0 +1,102 @@
+---
+import { content, type Locale } from '../data/content';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { privacy } = content[lang];
+
+const topHref = lang === 'ja' ? '/' : '/en/';
+const newTabLabel = lang === 'ja' ? '（新しいタブで開く）' : '(opens in a new tab)';
+---
+
+<main>
+  <h1>{privacy.title}</h1>
+  <p>{privacy.scope}</p>
+
+  <section aria-labelledby="analytics-heading">
+    <h2 id="analytics-heading">{privacy.analytics.heading}</h2>
+    {privacy.analytics.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    <p>
+      {privacy.analytics.policyLead}
+      <br />
+      <a href={privacy.analytics.policyLink.href} target="_blank" rel="noopener noreferrer">
+        {privacy.analytics.policyLink.label}
+        <span class="sr-only">{newTabLabel}</span>
+      </a>
+    </p>
+  </section>
+
+  <section aria-labelledby="revision-heading">
+    <h2 id="revision-heading">{privacy.revision.heading}</h2>
+    <p>{privacy.revision.paragraph}</p>
+  </section>
+
+  <p class="enacted">{privacy.enacted}</p>
+  <p class="back"><a href={topHref}>{privacy.backLabel}</a></p>
+</main>
+
+<style>
+  main {
+    max-width: var(--measure);
+    margin-inline: auto;
+    font-size: 15px;
+  }
+
+  h1 {
+    margin: 0 0 var(--s3);
+    font-family: var(--font-mincho);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  /* セクション間の余白は見出しではなくコンテナ側が持つ（AGENTS.md 参照） */
+  section {
+    margin-top: var(--s5);
+  }
+
+  h2 {
+    margin: 0 0 var(--s2);
+    padding-bottom: var(--s1);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-mincho);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  p + p {
+    margin-top: var(--s2);
+  }
+
+  .enacted {
+    margin-top: var(--s5);
+    color: var(--ai-soft);
+    font-size: 13px;
+  }
+
+  .back {
+    margin-top: var(--s3);
+  }
+
+  /*
+   * PC 向けの上書きは必ずファイル末尾に置く。
+   * 左端を言語切り替え・フッターと揃えるため外枠は広げ、行長は --measure に保つ。
+   */
+  @media (min-width: 48rem) {
+    main {
+      max-width: var(--measure-wide);
+    }
+
+    main > * {
+      max-width: var(--measure);
+    }
+  }
+</style>
